@@ -70,6 +70,7 @@ public class RequestDataServer extends SimpleServer {
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
+            while (true) { // keep listening untill server is stopped
             clientSocket = serverSocket.accept(); // blocking call
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -81,6 +82,7 @@ public class RequestDataServer extends SimpleServer {
             // Close the socket
             clientSocket.close();
 
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

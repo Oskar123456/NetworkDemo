@@ -27,6 +27,7 @@ public class RequestFileServer extends RequestDataServer {
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
+            while(true){ // keep listening (as long as the server is running)
             clientSocket = serverSocket.accept(); // blocking call
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -36,8 +37,6 @@ public class RequestFileServer extends RequestDataServer {
             String requestLine = requestDTO.getRequestLine();
             String ressource = requestLine.split(" ")[1];
 
-
-
             // Get the file from the ressource
             String response = getFile(ressource);
 
@@ -45,6 +44,7 @@ public class RequestFileServer extends RequestDataServer {
 
             // Close the socket
             clientSocket.close();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
