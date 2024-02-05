@@ -9,7 +9,7 @@ import java.util.Map;
 
 /*
  * Purpose of this demo is to show how to get the data from the request headers etc.
- * This is a simple http server that can handle GET, POST, PUT and PATCH requests with a single client and only one message from the client before closing the connection
+ * This is a simple http server that can handle GET, POST, PUT and PATCH requests with a single client.
  * The server must therefore be restarted for each request.
  * Author: Thomas Hartmann
  */
@@ -17,6 +17,28 @@ public class RequestDataServer extends SimpleServer {
     public static void main(String[] args) {
         RequestDataServer server = new RequestDataServer();
         server.start(8080);
+    }
+
+    @Override
+    public void start(int port) {
+        try {
+            serverSocket = new ServerSocket(port);
+            while (true) { // keep listening untill server is stopped
+                clientSocket = serverSocket.accept(); // blocking call
+                out = new PrintWriter(clientSocket.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+                // Read the request and send it back to the client
+                String response = generateRequestObject(in).toString();
+                clientSocket.getOutputStream().write(response.getBytes());
+
+                // Close the socket
+                clientSocket.close();
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public RequestDTO generateRequestObject(BufferedReader in) { // public because we want to use it in extensions of this class
@@ -66,27 +88,6 @@ public class RequestDataServer extends SimpleServer {
         return new RequestDTO(requestLine, headers, queryParams, requestBodyData);
     }
 
-    @Override
-    public void start(int port) {
-        try {
-            serverSocket = new ServerSocket(port);
-            while (true) { // keep listening untill server is stopped
-            clientSocket = serverSocket.accept(); // blocking call
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            // Read the request and send it back to the client
-            String response = generateRequestObject(in).toString();
-            clientSocket.getOutputStream().write(response.getBytes());
-
-            // Close the socket
-            clientSocket.close();
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private Map<String, String> getHeadersFromRequest(StringBuilder requestBuilder) {
         Map<String, String> headers = new HashMap<>();

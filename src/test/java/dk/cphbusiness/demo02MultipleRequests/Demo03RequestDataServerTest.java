@@ -32,7 +32,7 @@ class Demo03RequestDataServerTest {
 
     @Test
     @DisplayName("Test Meta Data Server and Client")
-    public void testMetaDataServerAndClient() {
+    public void testRequestDataServerAndClient() {
         String postData = "key1=value1&key2=value2";
         String httpRequest = "POST /path/to/endpoint?query1=firstValue&query2=secondValue HTTP/1.1\r\n" +
                 "Host: " + "localhost" + "\r\n" +

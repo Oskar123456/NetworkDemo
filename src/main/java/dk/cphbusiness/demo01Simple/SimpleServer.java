@@ -46,5 +46,6 @@ public class SimpleServer {
     public static void main(String[] args) {
         SimpleServer server = new SimpleServer();
         server.start(6666);
+        server.stop();
     }
 }
