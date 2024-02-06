@@ -41,7 +41,7 @@ public class RequestDataServer extends SimpleServer {
         }
     }
 
-    public RequestDTO generateRequestObject(BufferedReader in) { // public because we want to use it in extensions of this class
+    public RequestDTO generateRequestObject(BufferedReader in) throws IllegalArgumentException { // public because we want to use it in extensions of this class
         String requestLine = null; // GET /path/to/endpoint?queryparam1=9&queryparam2=18 HTTP/1.1
         Map<String, String> headers = null;
         Map<String, String> queryParams = null;
@@ -52,10 +52,12 @@ public class RequestDataServer extends SimpleServer {
 
             // Read the first line of the request line like: GET / HTTP/1.1 (or POST /path/to/ressource HTTP/1.1)
             requestLine = in.readLine();
+//            System.out.println("Request line: " + requestLine);
+//            System.out.println("Next line: " + in.readLine());
 
-            if (requestLine == null || requestLine.isEmpty()) {
-                throw new IllegalArgumentException("The request is lacking the request line and is therefore not a valid HTTP request");
-            }
+//            if (requestLine == null || requestLine.isEmpty()) {
+//                throw new IllegalArgumentException("The request is lacking the request line and is therefore not a valid HTTP request");
+//            }
 
             // Check if the request has more lines
             if (!in.ready()) {
@@ -77,6 +79,8 @@ public class RequestDataServer extends SimpleServer {
                 System.out.println("Request body: " + requestBodyData.toString());
             } catch (IllegalArgumentException e) {
                 System.out.println("Not a POST, PUT or PATCH request");
+                e.printStackTrace();
+
             }
 
             // Parse query parameters
@@ -105,10 +109,10 @@ public class RequestDataServer extends SimpleServer {
 
 
     private Map<String, String> getRequestBody(String requestLine, StringBuilder requestBuilder) throws IOException {
-        if (!(requestLine.contains("POST") || requestLine.contains("PUT") || requestLine.contains("PATCH"))) {
-            throw new IllegalArgumentException("This request contains no body");
-        }
         Map<String, String> requestBodyFormParameters = new HashMap<>();
+        if (!(requestLine.contains("POST") || requestLine.contains("PUT") || requestLine.contains("PATCH"))) {
+            return requestBodyFormParameters;
+        }
 
         StringBuilder requestBodyBuilder = new StringBuilder();
         int contentLength = getContentLength(requestBuilder.toString());

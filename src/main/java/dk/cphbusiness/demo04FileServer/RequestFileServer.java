@@ -27,28 +27,42 @@ public class RequestFileServer extends RequestDataServer {
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
-            while(true){ // keep listening (as long as the server is running)
-            clientSocket = serverSocket.accept(); // blocking call
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            // read the request from the client
-            RequestDTO requestDTO = generateRequestObject(in);
-            String requestLine = requestDTO.getRequestLine();
-            String ressource = requestLine.split(" ")[1];
-
-            // Get the file from the ressource
-            String response = getFile(ressource);
-
-            clientSocket.getOutputStream().write(response.getBytes());
-
-            // Close the socket
-            clientSocket.close();
-            }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+            while(true) { // keep listening (as long as the server is running)
+
+                try {
+                    clientSocket = serverSocket.accept(); // blocking call
+                    out = new PrintWriter(clientSocket.getOutputStream(), true);
+                    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+
+                    // read the request from the client
+                    RequestDTO requestDTO = generateRequestObject(in);
+                    String requestLine = requestDTO.getRequestLine();
+                    String ressource = requestLine.split(" ")[1];
+                    if(ressource.endsWith(".ico")) { //browser sends request for favicon.ico
+                        clientSocket.close();
+                        continue;
+                    }
+
+                    // Get the file from the ressource
+                    String response = getFile(ressource);
+
+                    clientSocket.getOutputStream().write(response.getBytes());
+
+                    // Close the socket
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }finally {
+                    try {
+                        clientSocket.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
     }
 
     private String getFile(String ressource) {

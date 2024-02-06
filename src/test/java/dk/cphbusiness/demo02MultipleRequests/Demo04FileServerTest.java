@@ -29,7 +29,7 @@ class Demo04FileServerTest {
     @AfterEach
     public void tearDown() {
         System.out.println("tearDownEach");
-        rfs.stop();
+        rfs.stop(); // this will make the server throw an SocketException, but it is ok.
     }
 
     @Test

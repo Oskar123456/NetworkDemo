@@ -34,7 +34,7 @@ class Demo03RequestDataServerTest {
     @DisplayName("Test Meta Data Server and Client")
     public void testRequestDataServerAndClient() {
         String postData = "key1=value1&key2=value2";
-        String httpRequest = "POST /path/to/endpoint?query1=firstValue&query2=secondValue HTTP/1.1\r\n" +
+        String httpRequest = "POST /path/to/endpoint?query1=firstValue&query2=secondValue HTTP/1.1\r\n" + // Request line with method, path and query parameters
                 "Host: " + "localhost" + "\r\n" +
                 "User-Agent: SimpleWebClient\r\n" +
                 "Accept: */*\r\n" +
