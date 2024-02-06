@@ -64,7 +64,8 @@ public class RequestFileServer extends RequestDataServer {
                     // Close the socket
                 } catch (IOException e) {
                     e.printStackTrace();
-                }finally {
+                }
+                finally {
                     try {
                         clientSocket.close();
                     } catch (IOException e) {

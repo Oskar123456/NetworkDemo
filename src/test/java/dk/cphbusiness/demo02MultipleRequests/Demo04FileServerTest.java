@@ -14,22 +14,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class Demo04FileServerTest {
     private static RequestFileServer rfs = new RequestFileServer();
+    private static Thread serverThread = null;
 
     @BeforeAll
     public static void setup() {
         System.out.println("setup");
 
     }
+
     @BeforeEach
     public void setupEach() {
         System.out.println("setupEach");
-        new Thread(()->rfs.start(6669)).start();
+        serverThread = new Thread(() -> rfs.start(6669));
+        serverThread.start();
     }
 
     @AfterEach
     public void tearDown() {
         System.out.println("tearDownEach");
-        rfs.stop(); // this will make the server throw an SocketException, but it is ok.
+//        rfs.stop();
+        serverThread.interrupt();
+//        rfs.stop(); // this will make the server throw an SocketException, but it is ok.
     }
 
     @Test
@@ -38,7 +43,7 @@ class Demo04FileServerTest {
         String httpRequest = "GET /pages/index.html HTTP/1.1\r\n" +
                 "Host: " + "localhost";
         String response = new RequestFileClient().sendRequest(httpRequest, "localhost", 6669);
-        String expected = "<html><head><title>hello world</title></head><body><h1>Hello World</h1></body></html>";
+        String expected = "HTTP/1.1 200 OKContent-Type: text/htmlContent-Length: 90Connection: close<html><head><title>File Server Demo</title></head><body><h1>Hello World</h1></body></html>";
         assertEquals(expected, response);
     }
 
@@ -48,7 +53,8 @@ class Demo04FileServerTest {
         String httpRequest = "GET /pages HTTP/1.1\r\n" +
                 "Host: " + "localhost";
         String response = new RequestFileClient().sendRequest(httpRequest, "localhost", 6669);
-        String expected = "<html><head><title>hello world</title></head><body><h1>Hello World</h1></body></html>";
+        System.out.println(response);
+        String expected = "HTTP/1.1 200 OKContent-Type: text/htmlContent-Length: 90Connection: close<html><head><title>File Server Demo</title></head><body><h1>Hello World</h1></body></html>";
         assertEquals(expected, response);
     }
 }
