@@ -50,7 +50,16 @@ public class RequestFileServer extends RequestDataServer {
                     // Get the file from the ressource
                     String response = getFile(ressource);
 
-                    clientSocket.getOutputStream().write(response.getBytes());
+                    //write the response to the client
+                    // write headers first:
+                    out.println("HTTP/1.1 200 OK");
+                    out.println("Content-Type: text/html");
+                    out.println("Content-Length: " + response.length());
+                    out.println("Connection: close");
+                    out.println(); // blank line between headers and content, very important !
+                    out.println(response);
+
+//                    clientSocket.getOutputStream().write(response.getBytes());
 
                     // Close the socket
                 } catch (IOException e) {
