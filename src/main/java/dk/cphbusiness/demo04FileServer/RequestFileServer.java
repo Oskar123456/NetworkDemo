@@ -51,7 +51,6 @@ public class RequestFileServer extends RequestDataServer {
                     String response = getFile(ressource);
 
                     //write the response to the client
-                    // write headers first:
                     out.println("HTTP/1.1 200 OK");
                     out.println("Content-Type: text/html");
                     out.println("Content-Length: " + response.length());
