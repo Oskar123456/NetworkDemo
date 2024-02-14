@@ -42,21 +42,35 @@ public class RequestFileServer extends RequestDataServer {
                     RequestDTO requestDTO = generateRequestObject(in);
                     String requestLine = requestDTO.getRequestLine();
                     String ressource = requestLine.split(" ")[1];
+                    System.out.println(ressource);
                     if(ressource.endsWith(".ico")) { //browser sends request for favicon.ico
-                        clientSocket.close();
+//                        clientSocket.close();
                         continue;
                     }
 
+
+
                     // Get the file from the ressource
-                    String response = getFile(ressource);
 
                     //write the response to the client
                     out.println("HTTP/1.1 200 OK");
                     out.println("Content-Type: text/html");
-                    out.println("Content-Length: " + response.length());
                     out.println("Connection: close");
                     out.println(); // blank line between headers and content, very important !
-                    out.println(response);
+
+                    System.out.println("Ressource: " + ressource);
+                    if(ressource.equals("/input/handleForm")){
+                        out.println(requestDTO.getRequestBody());
+                    }
+                    else if(!ressource.startsWith("/pages")) {
+                        clientSocket.close();
+                        continue;
+                    } else {
+                        String response = getFile(ressource);
+                        out.println("Content-Length: " + response.length());
+                        out.println(response);
+                    }
+
 
 //                    clientSocket.getOutputStream().write(response.getBytes());
 
