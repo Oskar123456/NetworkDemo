@@ -127,10 +127,12 @@ public class RequestDataServer extends SimpleServer {
         } else {
             throw new IllegalArgumentException("This request contains no body");
         }
-        String[] paramStrings = requestBodyBuilder.toString().split("&");
-        for (String paramString : paramStrings) {
-            String[] parts = paramString.split("=");
-            requestBodyFormParameters.put(parts[0], parts[1]);
+        if (requestBodyBuilder.toString().contains("&")) {
+            String[] paramStrings = requestBodyBuilder.toString().split("&");
+            for (String paramString : paramStrings) {
+                String[] parts = paramString.split("=");
+                requestBodyFormParameters.put(parts[0], parts[1]);
+            }
         }
         return requestBodyFormParameters;
     }
