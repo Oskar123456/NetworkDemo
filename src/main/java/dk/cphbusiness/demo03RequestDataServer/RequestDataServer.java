@@ -41,7 +41,10 @@ public class RequestDataServer extends SimpleServer {
         }
     }
 
-    public RequestDTO generateRequestObject(BufferedReader in) throws IllegalArgumentException { // public because we want to use it in extensions of this class
+    public RequestDTO generateRequestObject(BufferedReader in) throws IllegalArgumentException { // public because we
+                                                                                                 // want to use it in
+                                                                                                 // extensions of this
+                                                                                                 // class
         String requestLine = null; // GET /path/to/endpoint?queryparam1=9&queryparam2=18 HTTP/1.1
         Map<String, String> headers = null;
         Map<String, String> queryParams = null;
@@ -50,14 +53,16 @@ public class RequestDataServer extends SimpleServer {
         try {
             StringBuilder requestBuilder = new StringBuilder();
 
-            // Read the first line of the request line like: GET / HTTP/1.1 (or POST /path/to/ressource HTTP/1.1)
+            // Read the first line of the request line like: GET / HTTP/1.1 (or POST
+            // /path/to/ressource HTTP/1.1)
             requestLine = in.readLine();
-//            System.out.println("Request line: " + requestLine);
-//            System.out.println("Next line: " + in.readLine());
+            // System.out.println("Request line: " + requestLine);
+            // System.out.println("Next line: " + in.readLine());
 
-//            if (requestLine == null || requestLine.isEmpty()) {
-//                throw new IllegalArgumentException("The request is lacking the request line and is therefore not a valid HTTP request");
-//            }
+            // if (requestLine == null || requestLine.isEmpty()) {
+            // throw new IllegalArgumentException("The request is lacking the request line
+            // and is therefore not a valid HTTP request");
+            // }
 
             // Check if the request has more lines
             if (!in.ready()) {
@@ -92,7 +97,6 @@ public class RequestDataServer extends SimpleServer {
         return new RequestDTO(requestLine, headers, queryParams, requestBodyData);
     }
 
-
     private Map<String, String> getHeadersFromRequest(StringBuilder requestBuilder) {
         Map<String, String> headers = new HashMap<>();
         // loop the requestBuilder until you find an empty line
@@ -106,7 +110,6 @@ public class RequestDataServer extends SimpleServer {
         }
         return headers;
     }
-
 
     private Map<String, String> getRequestBody(String requestLine, StringBuilder requestBuilder) throws IOException {
         Map<String, String> requestBodyFormParameters = new HashMap<>();
@@ -145,7 +148,8 @@ public class RequestDataServer extends SimpleServer {
     private static Map<String, String> getQueryParameters(String requestLine) {
         Map<String, String> queryParams = new HashMap<>();
 
-        if (requestLine.split(" ").length < 2) // if there is no path part, we could throw an exception since this is not a valid http request
+        if (requestLine.split(" ").length < 2) // if there is no path part, we could throw an exception since this is
+                                               // not a valid http request
             return queryParams;
         String pathPart = requestLine.split(" ")[1]; // get the /path/to/endpoint?queryparam1=9&queryparam2=18 part
 
@@ -155,7 +159,14 @@ public class RequestDataServer extends SimpleServer {
         String queriesPart = pathPart.split("\\?")[1]; // get the queryparam1=9&queryparam2=18 part.
 
         // There is either one query param or more:
-        String[] queries = queriesPart.contains("&") ? queriesPart.split("&") : new String[]{queriesPart}; // get the queryparam1=9 and queryparam2=18 parts in a String array
+        String[] queries = queriesPart.contains("&") ? queriesPart.split("&") : new String[] { queriesPart }; // get the
+                                                                                                              // queryparam1=9
+                                                                                                              // and
+                                                                                                              // queryparam2=18
+                                                                                                              // parts
+                                                                                                              // in a
+                                                                                                              // String
+                                                                                                              // array
         for (int i = 0; i < queries.length; i++) {
             String[] keyValue = queries[i].split("=");
             queryParams.put(keyValue[0], keyValue[1]);
@@ -172,7 +183,8 @@ public class RequestDataServer extends SimpleServer {
         public RequestDTO() {
         }
 
-        public RequestDTO(String requestLine, Map<String, String> headers, Map<String, String> queryParams, Map<String, String> requestBody) {
+        public RequestDTO(String requestLine, Map<String, String> headers, Map<String, String> queryParams,
+                Map<String, String> requestBody) {
             this.requestLine = requestLine;
             this.headers = headers;
             this.queryParams = queryParams;
